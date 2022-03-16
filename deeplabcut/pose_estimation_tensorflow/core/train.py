@@ -30,7 +30,7 @@ from deeplabcut.pose_estimation_tensorflow.datasets import (
 from deeplabcut.pose_estimation_tensorflow.nnets import PoseNetFactory
 from deeplabcut.pose_estimation_tensorflow.util.logging import setup_logging
 
-from deeplabcut.pose_estimation_tensorflow.core.evaluate_multianimal import evaluate_multianimal_full
+from deeplabcut.pose_estimation_tensorflow.core.evaluate import evaluate_network
 
 class LearningRate(object):
     def __init__(self, cfg):
@@ -276,10 +276,6 @@ def train(
         )
         cum_loss += loss_val
         train_writer.add_summary(summary, it)
-        
-        # Evaluate network when at save checkpoint
-        if it % saveiters == 0 and it > start_iter:
-            evaluate_multianimal_full(config=config_yaml,show_errors=False)
 
         if it % display_iters == 0 and it > start_iter:
             average_loss = cum_loss / display_iters
@@ -296,6 +292,10 @@ def train(
         if (it % save_iters == 0 and it != start_iter) or it == max_iter:
             model_name = cfg["snapshot_prefix"]
             saver.save(sess, model_name, global_step=it)
+            
+        # Evaluate network when at save checkpoint
+        if it % saveiters == 0 and it > start_iter:
+            evaluate_network(config=config_yaml,show_errors=False)
 
     lrf.close()
     sess.close()
