@@ -204,7 +204,7 @@ def train(
         if (it % save_iters == 0 and it != start_iter) or it == max_iter:
             model_name = cfg["snapshot_prefix"]
             saver.save(sess, model_name, global_step=it)
-            deeplabcut.evaluate_network(config_yaml)
+            evaluate_network(config_yaml)
 
     lrf.close()
 
