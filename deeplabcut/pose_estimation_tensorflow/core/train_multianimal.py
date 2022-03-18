@@ -203,8 +203,9 @@ def train(
         # Save snapshot and evaluate network
         if (it % save_iters == 0 and it != start_iter) or it == max_iter:
             model_name = cfg["snapshot_prefix"]
-            saver.save(sess, model_name, global_step=it)
-            #evaluate_network(config_yaml)
+                saver.save(sess, model_name, global_step=it)
+        if (i+1t % save_iters == 0 and it != start_iter) or it == max_iter:
+            evaluate_network(config_yaml)
 
     lrf.close()
 

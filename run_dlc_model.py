@@ -11,6 +11,7 @@ max_it = 15
 save_it = 5
 disp_it = 1
 
+
 # Create datasets
 create_multianimaltraining_dataset(config_path,Shuffles=[shuffle])
 
