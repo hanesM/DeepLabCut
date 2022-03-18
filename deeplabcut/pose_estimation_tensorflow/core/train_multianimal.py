@@ -23,7 +23,7 @@ from deeplabcut.pose_estimation_tensorflow.datasets import PoseDatasetFactory
 from deeplabcut.pose_estimation_tensorflow.nnets import PoseNetFactory
 from deeplabcut.pose_estimation_tensorflow.nnets.utils import get_batch_spec
 from deeplabcut.pose_estimation_tensorflow.util.logging import setup_logging
-from deeplabcut.pose_estimation_tensorflow.util.evaluate import evaluate_network
+from deeplabcut.pose_estimation_tensorflow.core.evaluate import evaluate_network
 
 from deeplabcut.pose_estimation_tensorflow.core.train import (
     setup_preloading,
