@@ -164,6 +164,7 @@ def train_network(
             print("Selecting multi-animal trainer")
             train(
                 str(poseconfigfile),
+                config,
                 displayiters,
                 saveiters,
                 maxiters,

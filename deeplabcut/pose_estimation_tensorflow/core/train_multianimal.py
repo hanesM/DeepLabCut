@@ -23,6 +23,8 @@ from deeplabcut.pose_estimation_tensorflow.datasets import PoseDatasetFactory
 from deeplabcut.pose_estimation_tensorflow.nnets import PoseNetFactory
 from deeplabcut.pose_estimation_tensorflow.nnets.utils import get_batch_spec
 from deeplabcut.pose_estimation_tensorflow.util.logging import setup_logging
+from deeplabcut.pose_estimation_tensorflow.util.evaluate import evaluate_network
+
 from deeplabcut.pose_estimation_tensorflow.core.train import (
     setup_preloading,
     start_preloading,
@@ -32,6 +34,7 @@ from deeplabcut.pose_estimation_tensorflow.core.train import (
 
 
 def train(
+    pose_config_yaml,
     config_yaml,
     displayiters,
     saveiters,
@@ -42,12 +45,12 @@ def train(
 ):
     start_path = os.getcwd()
     os.chdir(
-        str(Path(config_yaml).parents[0])
-    )  # switch to folder of config_yaml (for logging)
+        str(Path(pose_config_yaml).parents[0])
+    )  # switch to folder of pose_config_yaml (for logging)
 
     setup_logging()
 
-    cfg = load_config(config_yaml)
+    cfg = load_config(pose_config_yaml)
     if cfg["optimizer"] != "adam":
         print(
             "Setting batchsize to 1! Larger batchsize not supported for this loader:",
@@ -142,7 +145,7 @@ def train(
 
     cumloss, partloss, locrefloss, pwloss = 0.0, 0.0, 0.0, 0.0
     lr_gen = LearningRate(cfg)
-    stats_path = Path(config_yaml).with_name("learning_stats.csv")
+    stats_path = Path(pose_config_yaml).with_name("learning_stats.csv")
     lrf = open(str(stats_path), "w")
 
     print("Training parameters:")
@@ -197,10 +200,11 @@ def train(
             cumloss, partloss, locrefloss, pwloss = 0.0, 0.0, 0.0, 0.0
             lrf.flush()
 
-        # Save snapshot
+        # Save snapshot and evaluate network
         if (it % save_iters == 0 and it != start_iter) or it == max_iter:
             model_name = cfg["snapshot_prefix"]
             saver.save(sess, model_name, global_step=it)
+            deeplabcut.evaluate_network(config_yaml)
 
     lrf.close()
 
